@@ -1,6 +1,7 @@
 package com.swapnil.chatapp.feature.editProfile
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -32,7 +34,7 @@ import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun EditProfileScreen() {
+fun EditProfileScreen(email:String) {
     var name by remember {
         mutableStateOf("")
     }
@@ -49,7 +51,8 @@ fun EditProfileScreen() {
                 .padding(top = 10.dp)
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
-                .padding(16.dp)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
@@ -64,6 +67,22 @@ fun EditProfileScreen() {
                 onValueChange = { name = it },
                 label = {
                     Text(text = "Name")
+                })
+
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Filled.Email,
+                        contentDescription = "Person",
+                        tint = Primary
+                    )
+                },
+                value = email,
+                readOnly = true,
+                onValueChange = {  },
+                label = {
+                    Text(text = "Email")
                 })
 
             Button(modifier = Modifier.padding(top = 24.dp).align(Alignment.CenterHorizontally),onClick = {
