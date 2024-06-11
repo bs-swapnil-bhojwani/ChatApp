@@ -12,6 +12,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.swapnil.chatapp.composables.ChatAppBar
 import com.swapnil.chatapp.composables.SignInWithGoogleButton
+import com.swapnil.chatapp.ui.Screen
 
 @Composable
 fun LoginScreen(navController: NavHostController) {
@@ -26,7 +27,8 @@ fun LoginScreen(navController: NavHostController) {
             contentAlignment = Alignment.Center
         ) {
             SignInWithGoogleButton(modifier = Modifier, onSuccess = { firebaseUser ->
-                navController.navigate("EditProfile?email=${firebaseUser.email}")
+                val email = firebaseUser.email?: error("Email not found!")
+                navController.navigate(Screen.EditProfile(email).route)
                 Toast.makeText(context, "User is ${firebaseUser.email}", Toast.LENGTH_SHORT)
                     .show()
             }, onFailure = { error ->

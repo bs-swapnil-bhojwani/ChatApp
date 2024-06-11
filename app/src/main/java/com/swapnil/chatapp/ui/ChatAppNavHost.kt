@@ -13,14 +13,14 @@ import com.swapnil.chatapp.feature.splash.SplashScreen
 @Composable
 fun ChatAppNavHost() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = Route.Login.name) {
-        composable(Route.Splash.name) {
+    NavHost(navController = navController, startDestination = Screen.Login.route) {
+        composable(Screen.Splash.route) {
             SplashScreen()
         }
-        composable(Route.Login.name) {
+        composable(Screen.Login.route) {
             LoginScreen(navController)
         }
-        composable("EditProfile?email={email}", arguments = listOf(navArgument("email") {
+        composable(Screen.EditProfile.getNavArgsFormat(), arguments = listOf(navArgument("email") {
             type = NavType.StringType
         })) {
             val email = it.arguments?.getString("email") ?: error("Email argument not passed")
