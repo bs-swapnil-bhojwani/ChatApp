@@ -3,19 +3,26 @@ package com.swapnil.chatapp.feature.editProfile
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -28,6 +35,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.swapnil.chatapp.composables.ChatAppBar
 import com.swapnil.chatapp.composables.TextWithAsterisk
@@ -51,6 +59,11 @@ fun EditProfileScreen(email: String) {
     }
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+
+    val radioOptions = listOf("Male", "Female")
+    val (selectedOption, onOptionSelected) = remember {
+        mutableStateOf(radioOptions[0])
+    }
 
 
     Scaffold(
@@ -134,6 +147,30 @@ fun EditProfileScreen(email: String) {
                     null
                 },
             )
+
+            Card(
+                modifier = Modifier.selectableGroup(), elevation = CardDefaults.cardElevation(
+                    defaultElevation = 4.dp,
+                )
+            ) {
+                radioOptions.forEach { text ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .selectable(
+                                selected = text == selectedOption,
+                                role = Role.RadioButton,
+                                onClick = {
+                                    onOptionSelected(text)
+                                })
+                            .padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(selected = selectedOption == text, onClick = null)
+                        Text(text = text, modifier = Modifier.padding(start = 8.dp))
+                    }
+                }
+            }
 
             Button(modifier = Modifier
                 .padding(top = 24.dp)
