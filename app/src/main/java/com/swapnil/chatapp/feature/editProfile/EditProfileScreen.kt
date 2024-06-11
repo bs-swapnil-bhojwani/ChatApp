@@ -11,6 +11,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -29,22 +30,39 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.swapnil.chatapp.composables.ChatAppBar
+import com.swapnil.chatapp.composables.TextWithAsterisk
 import com.swapnil.chatapp.ui.theme.Primary
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun EditProfileScreen(email:String) {
+fun EditProfileScreen(email: String) {
     var name by remember {
         mutableStateOf("")
+    }
+    var bio by remember {
+        mutableStateOf("")
+    }
+    var nameError by remember {
+        mutableStateOf(false)
+    }
+    var bioError by remember {
+        mutableStateOf(false)
     }
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
 
-    Scaffold(topBar = {
-        ChatAppBar(title = "Profile")
-    }, snackbarHost = { SnackbarHost(hostState = snackbarHostState, modifier = Modifier.imePadding()) }) { paddingValues ->
+    Scaffold(
+        topBar = {
+            ChatAppBar(title = "Profile")
+        },
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier.imePadding()
+            )
+        }) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -64,10 +82,17 @@ fun EditProfileScreen(email:String) {
                     )
                 },
                 value = name,
-                onValueChange = { name = it },
-                label = {
-                    Text(text = "Name")
-                })
+                onValueChange = {
+                    nameError = it.isBlank()
+                    name = it
+                },
+                isError = nameError,
+                supportingText = if (nameError) {
+                    { Text(text = "Required!") }
+                } else {
+                    null
+                },
+                label = { TextWithAsterisk(text = "Name") })
 
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
@@ -80,20 +105,63 @@ fun EditProfileScreen(email:String) {
                 },
                 value = email,
                 readOnly = true,
-                onValueChange = {  },
+                onValueChange = { },
                 label = {
                     Text(text = "Email")
                 })
 
-            Button(modifier = Modifier.padding(top = 24.dp).align(Alignment.CenterHorizontally),onClick = {
-                if (name.isNotBlank()) {
-                    scope.launch {
-                        snackbarHostState.showSnackbar(message = "Your name is $name")
-                    }
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Filled.Info,
+                        contentDescription = "Bio",
+                        tint = Primary
+                    )
+                },
+                value = bio,
+                onValueChange = {
+                    bioError = it.isBlank()
+                    bio = it
+                },
+                label = {
+                    TextWithAsterisk(text = "Bio")
+                },
+                isError = bioError,
+                supportingText = if (bioError) {
+                    { Text(text = "Required!") }
                 } else {
+                    null
+                },
+            )
+
+            Button(modifier = Modifier
+                .padding(top = 24.dp)
+                .align(Alignment.CenterHorizontally), onClick = {
+                if (name.isBlank() && bio.isBlank()) {
+                    nameError = true
+                    bioError = true
                     scope.launch {
-                        snackbarHostState.showSnackbar(message = "Please input your name")
+                        snackbarHostState.showSnackbar(message = "Please input your name and bio")
                     }
+                    return@Button
+                }
+                if (name.isBlank()) {
+                    nameError = true
+                    scope.launch {
+                        snackbarHostState.showSnackbar(message = "Please enter your name")
+                    }
+                    return@Button
+                }
+                if (bio.isBlank()) {
+                    bioError = true
+                    scope.launch {
+                        snackbarHostState.showSnackbar(message = "Please enter your bio")
+                    }
+                    return@Button
+                }
+                scope.launch {
+                    snackbarHostState.showSnackbar(message = "Your name is $name,bio is $bio")
                 }
             }) {
                 Text(text = "Save")
