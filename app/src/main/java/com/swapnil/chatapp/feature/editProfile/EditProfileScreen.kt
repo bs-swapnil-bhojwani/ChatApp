@@ -1,6 +1,7 @@
 package com.swapnil.chatapp.feature.editProfile
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,10 +36,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import com.streamliners.compose.comp.select.RadioGroup
 import com.swapnil.chatapp.composables.ChatAppBar
 import com.swapnil.chatapp.composables.TextWithAsterisk
+import com.swapnil.chatapp.domain.model.Gender
 import com.swapnil.chatapp.ui.theme.Primary
 import kotlinx.coroutines.launch
 
@@ -60,11 +64,9 @@ fun EditProfileScreen(email: String) {
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    val radioOptions = listOf("Male", "Female")
-    val (selectedOption, onOptionSelected) = remember {
-        mutableStateOf(radioOptions[0])
+    val gender = remember {
+        mutableStateOf<Gender?>(null)
     }
-
 
     Scaffold(
         topBar = {
@@ -149,27 +151,17 @@ fun EditProfileScreen(email: String) {
             )
 
             Card(
-                modifier = Modifier.selectableGroup(), elevation = CardDefaults.cardElevation(
+                modifier = Modifier.fillMaxWidth().padding(top = 12.dp).selectableGroup(), elevation = CardDefaults.cardElevation(
                     defaultElevation = 4.dp,
                 )
             ) {
-                radioOptions.forEach { text ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .selectable(
-                                selected = text == selectedOption,
-                                role = Role.RadioButton,
-                                onClick = {
-                                    onOptionSelected(text)
-                                })
-                            .padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(selected = selectedOption == text, onClick = null)
-                        Text(text = text, modifier = Modifier.padding(start = 8.dp))
-                    }
-                }
+                RadioGroup(
+                    modifier = Modifier.fillMaxWidth().padding(8.dp),
+                    state = gender,
+                    title = "Gender",
+                    options = Gender.entries.toList(),
+                    labelExtractor = { it.name }
+                )
             }
 
             Button(modifier = Modifier

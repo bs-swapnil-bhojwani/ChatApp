@@ -1,5 +1,6 @@
 [versions]
 agp = "8.5.0-beta02"
+droidLibsComposeAndroid = "1.2.17"
 firebaseAnalytics = "22.0.1"
 firebaseBom = "33.1.0"
 firebaseUiAuth = "7.2.0"
@@ -17,6 +18,7 @@ navigationCompose = "2.7.7"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+droidlibs-compose-android = { module = "com.github.The-Streamliners.DroidLibs:compose-android", version.ref = "droidLibsComposeAndroid" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics", version.ref = "firebaseAnalytics" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }

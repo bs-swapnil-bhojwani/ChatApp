@@ -48,6 +48,11 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    configurations {
+        "implementation" {
+            exclude("org.jetbrains.compose.material", "material-desktop")
+        }
+    }
 }
 
 dependencies {
@@ -67,6 +72,9 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation (libs.firebase.ui.auth)
     implementation(libs.firebase.auth)
+
+    //Droid libs
+    implementation(libs.droidlibs.compose.android)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
