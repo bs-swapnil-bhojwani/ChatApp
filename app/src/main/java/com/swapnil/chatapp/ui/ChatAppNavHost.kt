@@ -1,19 +1,21 @@
 package com.swapnil.chatapp.ui
 
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.swapnil.chatapp.feature.editProfile.EditProfileScreen
+import com.swapnil.chatapp.feature.editProfile.EditProfileViewModel
 import com.swapnil.chatapp.feature.login.LoginScreen
 import com.swapnil.chatapp.feature.splash.SplashScreen
 
 @Composable
 fun ChatAppNavHost() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = Screen.EditProfile("swapnil.bhojwani@gmail.com").route) {
+    NavHost(navController = navController, startDestination = Screen.Login.route) {
         composable(Screen.Splash.route) {
             SplashScreen()
         }
@@ -23,9 +25,8 @@ fun ChatAppNavHost() {
         composable(Screen.EditProfile.getNavArgsFormat(), arguments = listOf(navArgument("email") {
             type = NavType.StringType
         })) {
-            val email = it.arguments?.getString("email") ?: "swapnil.bhojwani@gmail.com"
-//            error("Email argument not passed")
-            EditProfileScreen(email)
+            val email = it.arguments?.getString("email") ?: error("Email argument not passed")
+            EditProfileScreen(viewModel = viewModel(), email = email)
         }
     }
 }
