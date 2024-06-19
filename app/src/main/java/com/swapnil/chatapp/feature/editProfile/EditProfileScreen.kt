@@ -26,7 +26,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.streamliners.compose.comp.select.RadioGroup
 import com.streamliners.compose.comp.textInput.config.InputConfig
 import com.streamliners.compose.comp.textInput.config.text
@@ -45,12 +45,17 @@ import com.swapnil.chatapp.composables.ChatAppBar
 import com.swapnil.chatapp.composables.TextInputLayout
 import com.swapnil.chatapp.domain.model.Gender
 import com.swapnil.chatapp.domain.model.User
+import com.swapnil.chatapp.ui.Screen
 import com.swapnil.chatapp.ui.theme.Primary
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnrememberedMutableState")
 @Composable
-fun EditProfileScreen(email: String, viewModel: EditProfileViewModel) {
+fun EditProfileScreen(
+    email: String,
+    viewModel: EditProfileViewModel,
+    navController: NavHostController
+) {
     val nameInput = remember {
         mutableStateOf(
             TextInputState(label = "Name", inputConfig = InputConfig.text {
@@ -119,7 +124,7 @@ fun EditProfileScreen(email: String, viewModel: EditProfileViewModel) {
                     )
                 },
                 value = email,
-                readOnly = true,
+                enabled = false,
                 onValueChange = { },
                 label = {
                     Text(text = "Email")
@@ -157,6 +162,11 @@ fun EditProfileScreen(email: String, viewModel: EditProfileViewModel) {
             Button(modifier = Modifier
                 .padding(top = 24.dp)
                 .align(Alignment.CenterHorizontally), onClick = {
+
+                if (gender.value === null) {
+                    genderError = true
+                }
+
                 if (TextInputState.allHaveValidInputs(
                         nameInput,
                         bioInput
@@ -172,13 +182,11 @@ fun EditProfileScreen(email: String, viewModel: EditProfileViewModel) {
                         viewModel.saveUser(user) {
                             scope.launch {
                                 snackbarHostState.showSnackbar(message = "Registration successful!")
+                                navController.navigate(Screen.Home.route)
                             }
                         }
                     }
                     return@Button
-                }
-                if (gender.value === null) {
-                    genderError = true
                 }
             }) {
                 Text(text = "Save")
