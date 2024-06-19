@@ -18,15 +18,20 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -43,9 +48,9 @@ import com.swapnil.chatapp.domain.model.User
 import com.swapnil.chatapp.ui.theme.Primary
 import kotlinx.coroutines.launch
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnrememberedMutableState")
 @Composable
-fun EditProfileScreen(email: String,viewModel: EditProfileViewModel) {
+fun EditProfileScreen(email: String, viewModel: EditProfileViewModel) {
     val nameInput = remember {
         mutableStateOf(
             TextInputState(label = "Name", inputConfig = InputConfig.text {
@@ -73,6 +78,14 @@ fun EditProfileScreen(email: String,viewModel: EditProfileViewModel) {
 
     val gender = remember {
         mutableStateOf<Gender?>(null)
+    }
+    var genderError by remember {
+        mutableStateOf(false)
+    }
+    LaunchedEffect(key1 = gender.value) {
+        if (gender.value !== null) {
+            genderError = false
+        }
     }
 
     Scaffold(
@@ -132,6 +145,13 @@ fun EditProfileScreen(email: String,viewModel: EditProfileViewModel) {
                     options = Gender.entries.toList(),
                     labelExtractor = { it.name }
                 )
+                if (genderError) {
+                    Text(
+                        text = "Required!",
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                }
             }
 
             Button(modifier = Modifier
@@ -149,13 +169,16 @@ fun EditProfileScreen(email: String,viewModel: EditProfileViewModel) {
                             gender = it,
                             bio = bioInput.value()
                         )
-                        viewModel.saveUser(user){
+                        viewModel.saveUser(user) {
                             scope.launch {
                                 snackbarHostState.showSnackbar(message = "Registration successful!")
                             }
                         }
                     }
                     return@Button
+                }
+                if (gender.value === null) {
+                    genderError = true
                 }
             }) {
                 Text(text = "Save")
