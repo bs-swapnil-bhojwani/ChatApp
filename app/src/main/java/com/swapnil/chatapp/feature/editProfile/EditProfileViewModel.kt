@@ -3,7 +3,7 @@ package com.swapnil.chatapp.feature.editProfile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.swapnil.chatapp.data.LocalRepo
-import com.swapnil.chatapp.data.UserRepo
+import com.swapnil.chatapp.data.remote.UserRepo
 import com.swapnil.chatapp.domain.model.User
 import kotlinx.coroutines.launch
 import javax.inject.Inject

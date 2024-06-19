@@ -9,13 +9,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.swapnil.chatapp.composables.ChatAppBar
 import com.swapnil.chatapp.composables.SignInWithGoogleButton
 import com.swapnil.chatapp.ui.Screen
 
 @Composable
-fun LoginScreen(navController: NavHostController) {
+fun LoginScreen(navController: NavHostController, viewModel: LoginViewModel) {
     val context = LocalContext.current
     Scaffold(topBar = {
         ChatAppBar(title = "Welcome to Chat App")
@@ -27,10 +28,8 @@ fun LoginScreen(navController: NavHostController) {
             contentAlignment = Alignment.Center
         ) {
             SignInWithGoogleButton(modifier = Modifier, onSuccess = { firebaseUser ->
-                val email = firebaseUser.email?: error("Email not found!")
-                navController.navigate(Screen.EditProfile(email).route)
-                Toast.makeText(context, "User is ${firebaseUser.email}", Toast.LENGTH_SHORT)
-                    .show()
+                val email = firebaseUser.email ?: error("Email not found!")
+                viewModel.onLoggedIn(email = email, navController)
             }, onFailure = { error ->
                 Toast.makeText(context, "Error is ${error?.message}", Toast.LENGTH_SHORT).show()
             })

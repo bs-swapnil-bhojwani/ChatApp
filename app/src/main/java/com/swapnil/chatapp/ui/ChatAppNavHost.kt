@@ -20,7 +20,7 @@ fun ChatAppNavHost() {
             SplashScreen(koinViewModel(),navController)
         }
         composable(Screen.Login.route) {
-            LoginScreen(navController)
+            LoginScreen(navController, koinViewModel())
         }
         composable(Screen.EditProfile.getNavArgsFormat(), arguments = listOf(navArgument("email") {
             type = NavType.StringType
